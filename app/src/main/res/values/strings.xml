@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Mind Guru</string>
+    <string name="hello_blank_fragment">Hello, Blank Fragment!</string>
+    <string name="already_customer">Already a Customer</string>
+    <string name="new_profile_button">Create New Profile</string>
+    <string name="register_text">Register Now</string>
+    <string name="login_text">Login</string>
+    <string name="login_button">Login</string>
+    <string name="settings_icon">Settings</string>
+    <string name="play_icon">Play</string>
+    <string name="home_icon">Home</string>
+</resources>

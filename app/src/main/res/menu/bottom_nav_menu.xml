@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/welcomeFragment"
+        android:icon="@drawable/baseline_home_24"
+        android:title="@string/home_icon" />
+    <item
+        android:id="@+id/playFieldFragment"
+        android:icon="@drawable/outline_play_circle_outline_24"
+        android:title="@string/play_icon" />
+    <item
+        android:id="@+id/profileFragment"
+        android:icon="@drawable/baseline_settings_24"
+        android:title="@string/settings_icon" />
+</menu>
