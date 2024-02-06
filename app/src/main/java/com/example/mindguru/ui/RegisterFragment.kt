@@ -1,43 +1,52 @@
 package com.example.mindguru.ui
 
-import AppDatabase
-import UserEntity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.example.mindguru.R
 import com.example.mindguru.Repository.UserRepository
+import com.example.mindguru.data.UserEntity
+import com.example.mindguru.data.database.AppDatabase
+import com.example.mindguru.data.database.UserDao
 import com.example.mindguru.databinding.FragmentRegisterBinding
 import kotlinx.coroutines.launch
 
 class RegisterFragment : Fragment() {
 
     private lateinit var binding: FragmentRegisterBinding
-    private val userDao = AppDatabase.getInstance(requireContext()).userDao()
     private lateinit var userRepository: UserRepository
-    private val viewModel: ViewModel by viewModels {
-        ViewModelFactory(userRepository)
-    }
+    private lateinit var userDao: UserDao
+    private lateinit var viewModel: ViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentRegisterBinding.inflate(inflater, container, false)
+
+        userDao = AppDatabase.getInstance(requireContext()).userDao()
+
+        userRepository = UserRepository(userDao)
+        val viewModelFactory = ViewModelFactory(userRepository)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(ViewModel::class.java)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // Hier die userRepository initialisieren
+        val navController = findNavController()
         userRepository = UserRepository(userDao)
+
+        binding.cancelButton.setOnClickListener {
+           navController.navigate(R.id.action_registerFragment_to_welcomeFragment)
+        }
 
         binding.registerButton.setOnClickListener {
             val username = binding.usernameEditText.text.toString()
@@ -60,8 +69,7 @@ class RegisterFragment : Fragment() {
                     }
                 }
             } else {
-                // Benutzereingabe ist ungültig
-                // Hier könntest du eine Fehlermeldung anzeigen
+                Toast.makeText(requireContext(),"Bitte Name und Passwort festlegen!", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -70,3 +78,4 @@ class RegisterFragment : Fragment() {
         return username.isNotBlank() && password.isNotBlank()
     }
 }
+

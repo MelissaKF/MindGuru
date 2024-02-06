@@ -1,5 +1,4 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,21 +11,34 @@
         android:id="@+id/usernameEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Benutzername"
-        android:inputType="text" />
+        android:hint="Benutzername..."
+        android:inputType="text"
+        android:textColor="@color/white" />
 
     <EditText
         android:id="@+id/passwordEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Passwort"
-        android:inputType="textPassword" />
+        android:hint="Passwort..."
+        android:inputType="textPassword"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/registerButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Registrieren" />
+        android:backgroundTint="@color/light_blue"
+        android:text="@string/create_profile_button"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/cancelButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/light_blue"
+        android:text="@string/cancel_button"
+        android:textColor="@color/white" />
 
 </LinearLayout>

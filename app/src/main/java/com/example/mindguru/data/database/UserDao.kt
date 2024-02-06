@@ -1,6 +1,9 @@
+package com.example.mindguru.data.database
+
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import com.example.mindguru.data.UserEntity
 
 @Dao
 interface UserDao {

@@ -1,7 +1,7 @@
 package com.example.mindguru.Repository
 
-import UserDao
-import UserEntity
+import com.example.mindguru.data.UserEntity
+import com.example.mindguru.data.database.UserDao
 
 
 class UserRepository(private val userDao: UserDao) {

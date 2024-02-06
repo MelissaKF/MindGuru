@@ -9,4 +9,6 @@
     <string name="settings_icon">Settings</string>
     <string name="play_icon">Play</string>
     <string name="home_icon">Home</string>
+    <string name="create_profile_button">Profil erstellen</string>
+    <string name="cancel_button">Abbrechen</string>
 </resources>
