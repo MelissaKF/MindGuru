@@ -8,7 +8,6 @@
     tools:context=".ui.ProfileFragment"
     android:background="@color/blue">
 
-
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -24,13 +23,13 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavMenu"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         app:itemIconTint="@color/light_blue"
         android:background="@color/dark_blue"
+        app:itemTextColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_nav_menu" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

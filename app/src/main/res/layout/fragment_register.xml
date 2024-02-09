@@ -19,9 +19,17 @@
         android:id="@+id/passwordEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Passwort..."
+        android:hint="@string/password_editText"
         android:inputType="textPassword"
         android:textColor="@color/white" />
+
+    <EditText
+        android:id="@+id/EmailEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/EmailEdit"
+        android:ems="10"
+        android:inputType="textEmailAddress" />
 
     <Button
         android:id="@+id/registerButton"

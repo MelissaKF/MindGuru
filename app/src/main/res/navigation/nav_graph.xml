@@ -11,14 +11,18 @@
         android:label="fragment_login"
         tools:layout="@layout/fragment_login">
         <action
-            android:id="@+id/action_loginRegisterFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
+            android:id="@+id/action_loginFragment_to_playFieldFragment"
+            app:destination="@id/playFieldFragment" />
     </fragment>
     <fragment
         android:id="@+id/playFieldFragment"
         android:name="com.example.mindguru.ui.PlayFieldFragment"
         android:label="fragment_play_field"
-        tools:layout="@layout/fragment_play_field" />
+        tools:layout="@layout/fragment_play_field" >
+        <action
+            android:id="@+id/action_playFieldFragment_to_welcomeFragment"
+            app:destination="@id/welcomeFragment" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.mindguru.ui.SettingsFragment"
@@ -52,5 +56,11 @@
         <action
             android:id="@+id/action_registerFragment_to_welcomeFragment"
             app:destination="@id/welcomeFragment" />
+        <action
+            android:id="@+id/action_registerFragment_to_playFieldFragment"
+            app:destination="@id/playFieldFragment" />
+        <action
+            android:id="@+id/action_registerFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
 </navigation>

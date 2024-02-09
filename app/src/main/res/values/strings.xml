@@ -11,4 +11,7 @@
     <string name="home_icon">Home</string>
     <string name="create_profile_button">Profil erstellen</string>
     <string name="cancel_button">Abbrechen</string>
+    <string name="EmailEdit">EMail...</string>
+    <string name="login_btn_text">Einloggen</string>
+    <string name="password_editText">Passwort...</string>
 </resources>

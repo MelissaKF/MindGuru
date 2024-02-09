@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "695058355711",
+    "project_id": "mind-guru-4c721",
+    "storage_bucket": "mind-guru-4c721.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:695058355711:android:8363a4b2fde704fd7343ca",
+        "android_client_info": {
+          "package_name": "com.example.mindguru"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQAYby1jFW-Utk9DH9BF8vB8je4FQ858k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
