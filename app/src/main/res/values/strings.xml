@@ -14,4 +14,6 @@
     <string name="EmailEdit">EMail...</string>
     <string name="login_btn_text">Einloggen</string>
     <string name="password_editText">Passwort...</string>
+    <string name="question_text">Frage hier?</string>
+    <string name="answer_c">Antwort C</string>
 </resources>

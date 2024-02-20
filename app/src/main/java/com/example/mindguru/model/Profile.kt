@@ -6,5 +6,4 @@ data class Profile (
     val username: String = "",
     val profilePicture: String = "",
     val userPoints: Int = 0,
-
     )

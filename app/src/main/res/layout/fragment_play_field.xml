@@ -2,60 +2,163 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.PlayFieldFragment">
+    android:padding="16dp">
 
-    <Button
-        android:id="@+id/PointCountBtn"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/layoutUserInfo"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/light_blue"
-        android:text="Punkte+"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Hier kannst du MaterialCardView-Elemente für UserInfo, Gesamtpunktezahl und Punkte der aktuellen Frage hinzufügen -->
+
+        <com.google.android.material.card.MaterialCardView
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp">
+
+            <TextView
+                android:id="@+id/textViewUserInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="UserInfo"
+                android:textAlignment="center"/>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp">
+
+            <TextView
+                android:id="@+id/textViewTotalPoints"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gesamtpunkte: 0" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/textViewCurrentPoints"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Aktuelle Frage: 0" />
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+
+
+
+    <TextView
+        android:id="@+id/textViewQuestion"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="84dp"
+        android:text="@string/question_text"
+        android:textAlignment="center"
+        android:textSize="20sp"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textViewUsername"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:text="Benutzername: "
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardViewAnswerA"
+        style="@style/AnswerCardViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="84dp"
+        android:layout_marginTop="128dp"
+        android:padding="4dp"
+        android:alpha="0.8"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/PointCountBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewQuestion">
 
-    <TextView
-        android:id="@+id/textViewPoints"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textViewUsername"
-        android:padding="16dp"
-        android:text="Punkte: "
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewUsername" />
+        <TextView
+            android:id="@+id/textViewAnswerA"
+            style="@style/AnswerTextViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Antwort A"
+            android:textColor="@color/white" />
 
-    <Button
-        android:id="@+id/logoutBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/light_blue"
-        android:text="Logout"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardViewAnswerB"
+        style="@style/AnswerCardViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="84dp"
+        android:layout_marginTop="20dp"
+        android:padding="4dp"
+        android:alpha="0.8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewPoints" />
+        app:layout_constraintTop_toBottomOf="@+id/cardViewAnswerA">
+
+        <TextView
+            android:id="@+id/textViewAnswerB"
+            style="@style/AnswerTextViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Antwort B"
+            android:textColor="@color/white" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardViewAnswerC"
+        style="@style/AnswerCardViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="84dp"
+        android:layout_marginTop="20dp"
+        android:padding="4dp"
+        android:alpha="0.8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardViewAnswerB">
+
+        <TextView
+            android:id="@+id/textViewAnswerC"
+            style="@style/AnswerTextViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Antwort C"
+            android:textColor="@color/white" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardViewAnswerD"
+        style="@style/AnswerCardViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="84dp"
+        android:layout_marginTop="20dp"
+        android:alpha="0.8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewAnswerC">
+
+        <TextView
+            android:id="@+id/textViewAnswerD"
+            style="@style/AnswerTextViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Antwort D"
+            android:textColor="@color/white" />
+
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

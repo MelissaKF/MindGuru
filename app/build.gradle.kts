@@ -43,7 +43,7 @@ android {
 
 dependencies {
 
-    val navVersion = "2.7.6"
+    val navVersion = "2.7.7"
     val room_version = "2.6.1"
 
     // Navigation
@@ -69,10 +69,9 @@ dependencies {
     implementation("androidx.room:room-ktx:$room_version")
 
     //Firebase
-
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
     implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.android.gms:play-services-auth:20.7.0")
-    implementation("com.google.firebase:firebase-firestore:24.10.1")
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
+    implementation("com.google.firebase:firebase-firestore:24.10.2")
     implementation("com.google.firebase:firebase-storage:20.3.0")
 }

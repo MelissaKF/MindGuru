@@ -44,5 +44,4 @@ class LoginFragment : Fragment() {
         val bottomNav = requireActivity().findViewById<View>(R.id.bottomNavMenu)
         bottomNav.visibility = View.VISIBLE
     }
-
 }
