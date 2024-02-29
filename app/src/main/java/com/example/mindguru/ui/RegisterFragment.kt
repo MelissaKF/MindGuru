@@ -58,7 +58,6 @@ class RegisterFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
 
-        // Sicherstellung, dass die Bottom Navigation wieder sichtbar wird, wenn das Fragment zerstört wird
         val bottomNav = requireActivity().findViewById<View>(R.id.bottomNavMenu)
         bottomNav.visibility = View.VISIBLE
     }

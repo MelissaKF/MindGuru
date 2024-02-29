@@ -1,38 +1,50 @@
 package com.example.mindguru.ui
 
+import com.example.mindguru.remote.TriviaApiService
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.mindguru.model.Options
+import androidx.lifecycle.viewModelScope
+import com.example.mindguru.model.Option
 import com.example.mindguru.model.Profile
 import com.example.mindguru.model.Question
-import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.auth
 import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.firestore
-import com.google.firebase.storage.storage
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+import java.net.URLDecoder
 
 class MainViewModel : ViewModel() {
 
-    private val auth = Firebase.auth
-    private val firestore = Firebase.firestore
-    private val questionsCollection = firestore.collection("Questions")
-    private val storage = Firebase.storage
+    private val auth = FirebaseAuth.getInstance()
+    private val firestore = FirebaseFirestore.getInstance()
+
+    private val triviaApiService: TriviaApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl("https://opentdb.com/")
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(TriviaApiService::class.java)
+    }
 
     private val _user: MutableLiveData<FirebaseUser?> = MutableLiveData()
     val user: LiveData<FirebaseUser?>
         get() = _user
 
-    private val _userPoints: MutableLiveData<Int?> = MutableLiveData()
-    val userPoints: LiveData<Int?>
+    private val _userPoints: MutableLiveData<Int> = MutableLiveData()
+    val userPoints: LiveData<Int>
         get() = _userPoints
 
-    private val _currentPoints: MutableLiveData<Int> = MutableLiveData()
-    val currentPoints: LiveData<Int>
-        get() = _currentPoints
+
+    private val _questions: MutableLiveData<List<Question?>> = MutableLiveData()
+    val questions: MutableLiveData<List<Question?>>
+        get() = _questions
 
     private val _currentQuestion: MutableLiveData<Question?> = MutableLiveData()
     val currentQuestion: MutableLiveData<Question?>
@@ -116,135 +128,61 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun fetchQuestionFromFirestore() {
-        val questionId = "question1"
-        val questionDocumentRef = questionsCollection.document(questionId)
+    fun fetchTriviaQuestions() {
+        viewModelScope.launch {
+            try {
+                val encodeType = ""
 
-        questionDocumentRef.addSnapshotListener { snapshot, error ->
-            if (error != null) {
-                // Behandle den Fehler hier
-                return@addSnapshotListener
-            }
-
-            if (snapshot != null && snapshot.exists()) {
-                val questionText = snapshot.getString("questionText")
-                val optionsMap = if (snapshot.contains("options")) {
-                    snapshot.get("options") as? Map<String, Map<String, Any>>
-                } else {
-                    null
+                val response = withContext(Dispatchers.IO) {
+                    triviaApiService.getTriviaQuestions(50, 9, "easy", "multiple", encodeType)
                 }
 
-                val options = optionsMap?.mapValues { entry ->
-                    val optionMap = entry.value
-                    val text = optionMap["text"] as String
-                    val isCorrect = optionMap["isCorrect"] as Boolean
-                    Options(text, isCorrect)
-                }
+                response.results.let { results ->
+                    val decodedQuestions = results.map { result ->
+                        val decodedQuestion = result.question
 
-                val question = Question(questionId, questionText, options)
-                _currentQuestion.postValue(question)
+                        val shuffledOptions =
+                            shuffleOptions(result.correctAnswer, result.incorrectAnswers)
 
-                val points = snapshot.getLong("points")?.toInt() ?: 0
-                Log.d("Firestore", "Points retrieved from Firestore: $points")
-                _currentPoints.postValue(points)
+                        val options = shuffledOptions.map { Option(it.text, it.correctAnswer) }
 
-                Log.d("Firestore", "Question fetched successfully: $question")
-            }
-        }
-    }
-
-    private fun addUserPointsForQuestion(
-        questionId: String,
-        selectedOptionId: String,
-        pointsToAdd: Int
-    ) {
-        Log.d("PointsAdd", "Betrete die Funktion addUserPointsForQuestion")
-        val currentUser = auth.currentUser
-        currentUser?.let { user ->
-            val questionRef = questionsCollection.document(questionId)
-
-            questionRef.get()
-                .addOnSuccessListener { documentSnapshot ->
-                    Log.d("PointsAdd", "Innerhalb des addOnSuccessListener-Blocks")
-                    if (documentSnapshot.exists()) {
-                        val question = documentSnapshot.toObject(Question::class.java)
-                        question?.let {
-                            val selectedOption = question.options?.get(selectedOptionId)
-                            Log.d("PointsAdd", "Selected Option: $selectedOption")
-                            if (selectedOption?.isCorrect == true) {
-                                Log.d("PointsAdd", "Vor dem Aufruf der Funktion addPointsToUser")
-                                // Punkte zum Benutzerkonto hinzufügen
-                                addPointsToUser(user.uid, pointsToAdd)
-                            }
-                        }
+                        Question(decodedQuestion, options)
                     }
+
+                    _questions.postValue(decodedQuestions)
+                    _currentQuestion.postValue(decodedQuestions.firstOrNull())
+                    Log.d("API", "Received questions: $decodedQuestions")
                 }
-                .addOnFailureListener { e ->
-                    Log.e("Points", "Fehler beim Abrufen der Frage: $e")
-                }
+            } catch (e: Exception) {
+                Log.e("API", "Error fetching trivia questions", e)
+            }
         }
     }
 
-    private fun addPointsToUser(userId: String, pointsToAdd: Int) {
-        Log.d("PointsAdd", "Betrete die Funktion addPointsToUser")
-        val userDocRef = firestore.collection("user").document(userId)
+    private fun shuffleOptions(
+        correctAnswer: String,
+        incorrectAnswers: List<String>
+    ): List<Option> {
+        val allOptions = mutableListOf(correctAnswer)
+        allOptions.addAll(incorrectAnswers)
+        return allOptions.shuffled().map { Option(it, it == correctAnswer) }
+    }
 
-        // Füge die Punkte zum Benutzerkonto hinzu
-        firestore.runTransaction { transaction ->
-            val userDoc = transaction.get(userDocRef)
-            val currentPoints = userDoc.getLong("userPoints") ?: 0
-            transaction.update(userDocRef, "userPoints", currentPoints + pointsToAdd)
+    fun updateUserPoints(pointsToAdd: Int) {
+        _userPoints.value?.let { currentPoints ->
+            val newPoints = currentPoints + pointsToAdd
+            _userPoints.postValue(newPoints)
+
+            // Aktualisiere auch die Punkte in der Firebase-Datenbank
+            auth.currentUser?.uid?.let { userId ->
+                profileRef.update("userPoints", newPoints)
+                    .addOnSuccessListener {
+                        Log.d("Firebase", "User points updated successfully: $newPoints")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("Firebase", "Failed to update user points: $e")
+                    }
+            }
         }
-            .addOnSuccessListener {
-                Log.d("PointsAdd", "$pointsToAdd Punkte wurden dem Benutzer hinzugefügt.")
-                _userPoints.postValue(_userPoints.value?.plus(pointsToAdd))
-            }
-            .addOnFailureListener { e ->
-                Log.e("Points", "Fehler beim Hinzufügen von Punkten zum Benutzer: $e")
-            }
-        Log.d("PointsAdd", "Ende der Funktion addPointsToUser")
-    }
-
-    // Funktion, um die Antwort zu überprüfen
-    fun checkAnswer(selectedOptionId: String): Boolean {
-        Log.d("PointsAdd", "Betrete die Funktion checkAnswer")
-        val currentQuestion = _currentQuestion.value
-
-        // Überprüfung, ob currentQuestion und options nicht null sind
-        if (currentQuestion?.options != null) {
-            // Finde die ausgewählte Option in der Map der Optionen
-
-            val selectedOption = currentQuestion.options[selectedOptionId]
-
-            // Überprüfung, ob die ausgewählte Option nicht null ist und isCorrect true ist
-            val isCorrect = selectedOption?.isCorrect == true
-
-            Log.d("PointsAdd", "Ist die Antwort korrekt: $isCorrect")
-            Log.d("Points", "Benutzerpunkte vorher: ${_userPoints.value}")
-
-            // Falls die Antwort korrekt ist, füge die Punkte hinzu
-            if (isCorrect) {
-                val points = currentQuestion.points ?: 0
-                Log.d("PointsAdd", "Vor dem Aufruf der Funktion addUserPointsForQuestion")
-                addUserPointsForQuestion(currentQuestion.questionId!!, selectedOptionId, points)
-                Log.d("PointsAdd", "Nach dem Aufruf der Funktion addUserPointsForQuestion")
-                _currentPoints.postValue(_currentPoints.value?.plus(points))
-                Log.d("PointsAdd", "Aktuelle Punkte: ${_currentPoints.value}")
-            }
-
-            Log.d("Points", "Benutzerpunkte nachher: ${_userPoints.value}")
-
-            return isCorrect
-        }
-
-        return false
-    }
-
-    fun getCurrentPoints(): Int? {
-        return _currentPoints.value ?: 0
-    }
-
-    fun getUserPoints(): Int? {
-        return _userPoints.value ?: 0
     }
 }

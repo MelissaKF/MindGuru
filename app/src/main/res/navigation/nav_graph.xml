@@ -18,11 +18,7 @@
         android:id="@+id/playFieldFragment"
         android:name="com.example.mindguru.ui.PlayFieldFragment"
         android:label="fragment_play_field"
-        tools:layout="@layout/fragment_play_field" >
-        <action
-            android:id="@+id/action_playFieldFragment_to_welcomeFragment"
-            app:destination="@id/welcomeFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_play_field" />
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.mindguru.ui.SettingsFragment"
@@ -39,6 +35,9 @@
         <action
             android:id="@+id/action_welcomeFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_welcomeFragment_to_playFieldFragment"
+            app:destination="@id/playFieldFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -59,8 +58,5 @@
         <action
             android:id="@+id/action_registerFragment_to_playFieldFragment"
             app:destination="@id/playFieldFragment" />
-        <action
-            android:id="@+id/action_registerFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
     </fragment>
 </navigation>
