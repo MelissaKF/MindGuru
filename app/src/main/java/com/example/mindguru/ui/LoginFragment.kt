@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -33,7 +34,23 @@ class LoginFragment : Fragment() {
                 binding.editTextEmail.text.toString(),
                 binding.editTextPassword.text.toString()
             )
-            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToPlayFieldFragment())
+        }
+
+        viewModel.loginStatus.observe(viewLifecycleOwner) { loginStatus ->
+            when (loginStatus) {
+                MainViewModel.LoginStatus.SUCCESS -> {
+                    viewModel.fetchTriviaCategories()
+                    findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomeFragment())
+                }
+
+                MainViewModel.LoginStatus.EMAIL_NOT_FOUND -> showToast("EMail existiert nicht")
+                MainViewModel.LoginStatus.WRONG_PASSWORD -> showToast("Falsches Passwort")
+                MainViewModel.LoginStatus.FAILURE -> showToast("User not found")
+            }
+        }
+
+        binding.registerButton.setOnClickListener {
+            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToRegisterFragment())
         }
     }
 
@@ -41,5 +58,9 @@ class LoginFragment : Fragment() {
         super.onDestroyView()
         val bottomNav = requireActivity().findViewById<View>(R.id.bottomNavMenu)
         bottomNav.visibility = View.VISIBLE
+    }
+
+    private fun showToast(message: String) {
+       Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 }

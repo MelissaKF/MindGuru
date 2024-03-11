@@ -1,52 +1,100 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
+    tools:background="@drawable/background_gradient"
     tools:context=".ui.RegisterFragment">
+
+    <ImageView
+        android:id="@+id/profilePhotoIV"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/ic_person"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/usernameEditText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Benutzername..."
+        android:layout_height="64dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="32dp"
+        android:hint="@string/username_ET"
         android:inputType="text"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textColorHint="@color/light_blue"
+        app:layout_constraintBottom_toTopOf="@+id/passwordEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profilePhotoIV" />
 
     <EditText
         android:id="@+id/passwordEditText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="64dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
         android:hint="@string/password_editText"
         android:inputType="textPassword"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textColorHint="@color/light_blue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/usernameEditText" />
 
     <EditText
         android:id="@+id/EmailEditText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/EmailEdit"
+        android:layout_height="64dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
         android:ems="10"
-        android:inputType="textEmailAddress" />
+        android:hint="@string/EmailEdit"
+        android:inputType="textEmailAddress"
+        android:textColorHint="@color/light_blue"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
 
     <Button
         android:id="@+id/registerButton"
-        android:layout_width="match_parent"
+        android:layout_width="128dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:backgroundTint="@color/light_blue"
-        android:text="@string/create_profile_button"
-        android:textColor="@color/white" />
+        android:elevation="16dp"
+        android:text="@string/ok_btn"
+        android:shadowColor="#000000"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="6"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toStartOf="@id/cancelButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cancelButton" />
 
     <Button
         android:id="@+id/cancelButton"
-        android:layout_width="match_parent"
+        android:layout_width="128dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="40dp"
         android:backgroundTint="@color/light_blue"
+        android:elevation="16dp"
         android:text="@string/cancel_button"
-        android:textColor="@color/white" />
+        android:shadowColor="#000000"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="6"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/registerButton" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

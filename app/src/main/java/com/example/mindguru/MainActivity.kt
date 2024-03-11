@@ -1,22 +1,20 @@
 package com.example.mindguru
 
-import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowInsetsController
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.mindguru.databinding.ActivityMainBinding
 import com.example.mindguru.ui.MainViewModel
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
-
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -48,29 +46,36 @@ class MainActivity : AppCompatActivity() {
 
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
-            // Der Benutzer ist eingeloggt
             setupBottomNav()
         } else {
             disablePlayFieldNavigation()
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        if (!isChangingConfigurations && !appClosed) {
-            viewModel.logout()
-        }
-    }
-
     override fun onDestroy() {
+        lifecycleScope.launch {
+            Log.d("MainActivityLogout", "Succeed")
+            val user = FirebaseAuth.getInstance().currentUser
+            if (user != null) {
+                viewModel.logout()
+            }
+        }
         super.onDestroy()
         appClosed = true
     }
 
     private fun disablePlayFieldNavigation(): Boolean {
-        val playFieldMenuItem = binding.bottomNavMenu.menu.findItem(R.id.playFieldFragment)
-        playFieldMenuItem.isEnabled = false
-        Toast.makeText(this@MainActivity, "Bitte loggen Sie sich zuerst ein", Toast.LENGTH_SHORT).show()
+        binding.bottomNavMenu.setOnItemSelectedListener { item ->
+            if (item.itemId == R.id.playFieldFragment) {
+                val user = FirebaseAuth.getInstance().currentUser
+                if (user == null) {
+                    Toast.makeText(this, "Bitte loggen Sie sich zuerst ein", Toast.LENGTH_SHORT)
+                        .show()
+                    return@setOnItemSelectedListener false
+                }
+            }
+            true
+        }
         return false
     }
 

@@ -1,4 +1,9 @@
 package com.example.mindguru.remote
+
+
+import com.example.mindguru.remote.model.SessionTokenResetResponse
+import com.example.mindguru.remote.model.SessionTokenResponse
+import com.example.mindguru.remote.model.TriviaCategoriesResponse
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
@@ -15,15 +20,34 @@ private val retrofit = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .build()
 
+
 interface TriviaApiService {
-    @GET("api.php?")
+
+    @GET("api_token.php")
+    suspend fun requestSessionToken(
+        @Query("command") command: String
+    ): SessionTokenResponse
+
+    @GET("api.php")
     suspend fun getTriviaQuestions(
         @Query("amount") amount: Int,
         @Query("category") category: Int,
         @Query("difficulty") difficulty: String,
         @Query("type") type: String,
-        @Query("encode") encode : String
+        @Query("encode") encode: String,
+        @Query("token") token: String
     ): TriviaResponse
-}
 
-//https://opentdb.com/api.php?amount=50&difficulty=easy&type=multiple&encode=url3986
+    @GET("api_category.php")
+    suspend fun getTriviaCategories(): TriviaCategoriesResponse
+
+    @GET("api_token.php")
+    suspend fun resetSessionToken(
+        @Query("command") command: String,
+        @Query("token") token: String
+    ): SessionTokenResetResponse
+
+    object TriviaApi {
+        val triviaApiService: TriviaApiService by lazy { retrofit.create(TriviaApiService::class.java) }
+    }
+}

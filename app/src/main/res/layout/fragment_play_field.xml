@@ -4,74 +4,104 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    tools:background="@drawable/background_gradient">
 
     <LinearLayout
         android:id="@+id/layoutUserInfo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Hier kannst du MaterialCardView-Elemente für UserInfo, Gesamtpunktezahl und Punkte der aktuellen Frage hinzufügen -->
-
         <com.google.android.material.card.MaterialCardView
-
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="8dp">
-
-            <TextView
-                android:id="@+id/textViewUserInfo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="UserInfo"
-                android:textAlignment="center"/>
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="8dp">
-
-            <TextView
-                android:id="@+id/textViewTotalPoints"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Gesamtpunkte: 0" />
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
             android:layout_weight="1">
 
             <TextView
-                android:id="@+id/textViewCurrentPoints"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Aktuelle Frage: 0" />
+                android:id="@+id/textViewUserInfo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/userinfo_TV"
+                android:textAlignment="center" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/totalPointsText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_points"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/textViewTotalPoints"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_points"
+                    android:textAlignment="center" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/CurrentPointsText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/current_question_points"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/textViewCurrentPoints"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/current_question_points"
+                    android:textAlignment="center" />
+            </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
-
-
 
     <TextView
         android:id="@+id/textViewQuestion"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_height="170dp"
         android:layout_marginTop="84dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
         android:text="@string/question_text"
         android:textAlignment="center"
-        android:textSize="20sp"
         android:textColor="@color/white"
+        android:textSize="20sp"
+        app:autoSizeMaxTextSize="28sp"
+        app:autoSizeMinTextSize="12sp"
+        app:autoSizeTextType="uniform"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -81,20 +111,23 @@
         style="@style/AnswerCardViewStyle"
         android:layout_width="match_parent"
         android:layout_height="84dp"
-        android:layout_marginTop="128dp"
+        android:layout_marginTop="16dp"
+        android:alpha="0.9"
         android:padding="4dp"
-        android:alpha="0.8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewQuestion">
 
         <TextView
             android:id="@+id/textViewAnswerA"
             style="@style/AnswerTextViewStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Antwort A"
-            android:textColor="@color/white" />
-
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/option_a"
+            android:textColor="@color/white"
+            app:autoSizeMaxTextSize="28sp"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeTextType="uniform" />
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -103,8 +136,8 @@
         android:layout_width="match_parent"
         android:layout_height="84dp"
         android:layout_marginTop="20dp"
+        android:alpha="0.9"
         android:padding="4dp"
-        android:alpha="0.8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardViewAnswerA">
@@ -112,11 +145,14 @@
         <TextView
             android:id="@+id/textViewAnswerB"
             style="@style/AnswerTextViewStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Antwort B"
-            android:textColor="@color/white" />
-
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/option_b"
+            android:textColor="@color/white"
+            app:autoSizeMaxTextSize="28sp"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeTextType="uniform" />
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -125,19 +161,22 @@
         android:layout_width="match_parent"
         android:layout_height="84dp"
         android:layout_marginTop="20dp"
+        android:alpha="0.9"
         android:padding="4dp"
-        android:alpha="0.8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cardViewAnswerB">
 
         <TextView
             android:id="@+id/textViewAnswerC"
             style="@style/AnswerTextViewStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Antwort C"
-            android:textColor="@color/white" />
-
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/option_c"
+            android:textColor="@color/white"
+            app:autoSizeMaxTextSize="28sp"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeTextType="uniform" />
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -146,7 +185,7 @@
         android:layout_width="match_parent"
         android:layout_height="84dp"
         android:layout_marginTop="20dp"
-        android:alpha="0.8"
+        android:alpha="0.9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardViewAnswerC">
@@ -154,11 +193,14 @@
         <TextView
             android:id="@+id/textViewAnswerD"
             style="@style/AnswerTextViewStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Antwort D"
-            android:textColor="@color/white" />
-
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/option_d"
+            android:textColor="@color/white"
+            app:autoSizeMaxTextSize="28sp"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeTextType="uniform" />
     </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

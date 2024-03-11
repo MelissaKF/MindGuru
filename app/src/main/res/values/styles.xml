@@ -16,4 +16,9 @@
         <item name="android:layout_gravity">center</item>
     </style>
 
+    <style name="roundedImageViewShape">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50dp</item>
+    </style>
+
 </resources>

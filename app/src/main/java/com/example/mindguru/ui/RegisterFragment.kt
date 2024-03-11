@@ -38,7 +38,7 @@ class RegisterFragment : Fragment() {
             viewModel.register(
                 binding.usernameEditText.text.toString(),
                 binding.EmailEditText.text.toString(),
-                binding.passwordEditText.text.toString()
+                binding.passwordEditText.text.toString(),
             )
 
             viewModel.user.observe(viewLifecycleOwner) {

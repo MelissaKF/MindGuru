@@ -3,6 +3,8 @@ package com.example.mindguru.ui
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Html
+import android.text.Spanned
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -35,19 +37,19 @@ class PlayFieldFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.fetchTriviaQuestions()
-
-        viewModel.username.observe(viewLifecycleOwner, Observer { username ->
+        viewModel.username.observe(viewLifecycleOwner){ username ->
             username?.let {
                 binding.textViewUserInfo.text = username
             }
-        })
+        }
 
-        viewModel.userPoints.observe(viewLifecycleOwner, Observer { points ->
+        viewModel.userPoints.observe(viewLifecycleOwner) { points ->
             points?.let {
                 binding.textViewTotalPoints.text = points.toString()
             }
-        })
+        }
+        binding.textViewCurrentPoints.text = Question.currentPointsEasy.toString()
+
 
         viewModel.questions.observe(viewLifecycleOwner, Observer { questions ->
             questions?.let {
@@ -64,7 +66,7 @@ class PlayFieldFragment : Fragment() {
 
     private fun showQuestion(question: Question) {
 
-        binding.textViewQuestion.text = question.question
+        binding.textViewQuestion.text = decodeHtmlString(question.question)
 
         question.options.let { options ->
             binding.textViewAnswerA.text = options.getOrNull(0)?.text
@@ -87,7 +89,7 @@ class PlayFieldFragment : Fragment() {
 
             if (isCorrect) {
                 Log.d(TAG, "Richtige Antwort! Punkte erhöht.")
-                viewModel.updateUserPoints(10)
+                viewModel.updateUserPoints(Question.currentPointsEasy)
                 highlightAnswer(
                     selectedAnswer,
                     ContextCompat.getColor(requireContext(), R.color.green)
@@ -108,7 +110,6 @@ class PlayFieldFragment : Fragment() {
             }
 
             Handler(Looper.getMainLooper()).postDelayed({
-                // Zurücksetzen der Farben und Anzeigen der nächsten Frage
                 resetCardViewColors()
                 answerButtonsEnabled = true
                 showNextQuestion()
@@ -152,19 +153,14 @@ class PlayFieldFragment : Fragment() {
         }
     }
 
-    private fun showCorrectAnswer(correctAnswer: String) {
-        when (correctAnswer) {
-            binding.textViewAnswerA.text.toString() -> highlightCardView(binding.cardViewAnswerA, ContextCompat.getColor(requireContext(), R.color.green))
-            binding.textViewAnswerB.text.toString() -> highlightCardView(binding.cardViewAnswerB, ContextCompat.getColor(requireContext(), R.color.green))
-            binding.textViewAnswerC.text.toString() -> highlightCardView(binding.cardViewAnswerC, ContextCompat.getColor(requireContext(), R.color.green))
-            binding.textViewAnswerD.text.toString() -> highlightCardView(binding.cardViewAnswerD, ContextCompat.getColor(requireContext(), R.color.green))
-        }
-    }
-
     private fun resetCardViewColors() {
         binding.cardViewAnswerA.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_blue))
         binding.cardViewAnswerB.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_blue))
         binding.cardViewAnswerC.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_blue))
         binding.cardViewAnswerD.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_blue))
+    }
+
+    private fun decodeHtmlString(htmlString: String): Spanned {
+        return Html.fromHtml(htmlString, Html.FROM_HTML_MODE_LEGACY)
     }
 }
