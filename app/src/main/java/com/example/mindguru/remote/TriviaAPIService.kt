@@ -1,6 +1,5 @@
 package com.example.mindguru.remote
 
-
 import com.example.mindguru.remote.model.SessionTokenResetResponse
 import com.example.mindguru.remote.model.SessionTokenResponse
 import com.example.mindguru.remote.model.TriviaCategoriesResponse
@@ -19,7 +18,6 @@ private val retrofit = Retrofit.Builder()
     .baseUrl("https://opentdb.com/")
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .build()
-
 
 interface TriviaApiService {
 

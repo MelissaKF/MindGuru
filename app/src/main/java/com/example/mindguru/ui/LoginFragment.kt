@@ -1,6 +1,7 @@
 package com.example.mindguru.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,14 +38,15 @@ class LoginFragment : Fragment() {
         }
 
         viewModel.loginStatus.observe(viewLifecycleOwner) { loginStatus ->
-            when (loginStatus) {
+            when (loginStatus!!) {
                 MainViewModel.LoginStatus.SUCCESS -> {
                     viewModel.fetchTriviaCategories()
+                    Log.d("LoginStatusCategories", viewModel.categories.value.toString())
                     findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomeFragment())
                 }
 
-                MainViewModel.LoginStatus.EMAIL_NOT_FOUND -> showToast("EMail existiert nicht")
-                MainViewModel.LoginStatus.WRONG_PASSWORD -> showToast("Falsches Passwort")
+                MainViewModel.LoginStatus.EMAIL_NOT_FOUND -> showToast("EMail not found")
+                MainViewModel.LoginStatus.WRONG_PASSWORD -> showToast("Wrong password")
                 MainViewModel.LoginStatus.FAILURE -> showToast("User not found")
             }
         }

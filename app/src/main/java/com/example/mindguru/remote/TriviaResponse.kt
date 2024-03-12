@@ -11,7 +11,6 @@ data class TriviaResponse(
 
 @JsonClass(generateAdapter = true)
 data class TriviaQuestion(
-    @Json(name = "question")
     val question: String,
     @Json(name = "correct_answer")
     val correctAnswer: String,

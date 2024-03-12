@@ -3,8 +3,6 @@ package com.example.mindguru.ui
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Html
-import android.text.Spanned
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +20,7 @@ private const val TAG = "PlayFieldFragment"
 
 class PlayFieldFragment : Fragment() {
 
+
     private val viewModel: MainViewModel by activityViewModels()
     private lateinit var binding: FragmentPlayFieldBinding
     private var answerButtonsEnabled = true
@@ -37,7 +36,7 @@ class PlayFieldFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.username.observe(viewLifecycleOwner){ username ->
+        viewModel.username.observe(viewLifecycleOwner) { username ->
             username?.let {
                 binding.textViewUserInfo.text = username
             }
@@ -51,22 +50,17 @@ class PlayFieldFragment : Fragment() {
         binding.textViewCurrentPoints.text = Question.currentPointsEasy.toString()
 
 
+
         viewModel.questions.observe(viewLifecycleOwner, Observer { questions ->
-            questions?.let {
-
-                questions[0]?.let { it1 -> showQuestion(it1) }
-
-                binding.cardViewAnswerA.setOnClickListener { onAnswerClicked(binding.textViewAnswerA.text.toString()) }
-                binding.cardViewAnswerB.setOnClickListener { onAnswerClicked(binding.textViewAnswerB.text.toString()) }
-                binding.cardViewAnswerC.setOnClickListener { onAnswerClicked(binding.textViewAnswerC.text.toString()) }
-                binding.cardViewAnswerD.setOnClickListener { onAnswerClicked(binding.textViewAnswerD.text.toString()) }
+            questions?.takeIf { it.isNotEmpty() }?.let {
+                it[0]?.let { question -> showQuestion(question) }
+                enableAnswerButtons()
             }
         })
     }
 
     private fun showQuestion(question: Question) {
-
-        binding.textViewQuestion.text = decodeHtmlString(question.question)
+        binding.textViewQuestion.text = question.question
 
         question.options.let { options ->
             binding.textViewAnswerA.text = options.getOrNull(0)?.text
@@ -75,6 +69,14 @@ class PlayFieldFragment : Fragment() {
             binding.textViewAnswerD.text = options.getOrNull(3)?.text
         }
     }
+
+    private fun enableAnswerButtons() {
+        binding.cardViewAnswerA.setOnClickListener { onAnswerClicked(binding.textViewAnswerA.text.toString()) }
+        binding.cardViewAnswerB.setOnClickListener { onAnswerClicked(binding.textViewAnswerB.text.toString()) }
+        binding.cardViewAnswerC.setOnClickListener { onAnswerClicked(binding.textViewAnswerC.text.toString()) }
+        binding.cardViewAnswerD.setOnClickListener { onAnswerClicked(binding.textViewAnswerD.text.toString()) }
+    }
+
 
     private fun onAnswerClicked(selectedAnswer: String) {
         if (!answerButtonsEnabled) {
@@ -135,7 +137,7 @@ class PlayFieldFragment : Fragment() {
                 viewModel.currentQuestion.postValue(nextQuestion)
                 nextQuestion?.let { showQuestion(it) }
             } else {
-                viewModel.fetchTriviaQuestions()
+                viewModel.fetchTriviaQuestionsByCategory(id)
             }
         }
     }
@@ -158,9 +160,5 @@ class PlayFieldFragment : Fragment() {
         binding.cardViewAnswerB.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_blue))
         binding.cardViewAnswerC.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_blue))
         binding.cardViewAnswerD.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_blue))
-    }
-
-    private fun decodeHtmlString(htmlString: String): Spanned {
-        return Html.fromHtml(htmlString, Html.FROM_HTML_MODE_LEGACY)
     }
 }

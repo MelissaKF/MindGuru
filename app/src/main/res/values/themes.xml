@@ -1,11 +1,21 @@
-
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Base application theme for Day mode. -->
     <style name="Base.Theme.MindGuru" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/dark_blue</item>
+        <item name="android:textColorPrimary">@color/white</item>
     </style>
 
-    <style name="Theme.MindGuru" parent="Base.Theme.MindGuru" >
+    <!-- Base application theme for Night mode. -->
+    <style name="Base.Theme.MindGuru.Night" parent="Base.Theme.MindGuru">
+        <item name="android:textColorPrimary">@color/white</item>
+    </style>
 
+    <!-- Application theme. -->
+    <style name="Theme.MindGuru" parent="Base.Theme.MindGuru">
+        <!-- Falls du spezifische Anpassungen für diesen Theme machen möchtest, füge hier die entsprechenden Items hinzu. -->
+    </style>
+
+    <!-- Application theme for Night mode. -->
+    <style name="Theme.MindGuru.Night" parent="Base.Theme.MindGuru.Night">
+        <!-- Falls du spezifische Anpassungen für diesen Theme machen möchtest, füge hier die entsprechenden Items hinzu. -->
     </style>
 </resources>

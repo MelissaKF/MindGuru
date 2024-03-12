@@ -91,7 +91,7 @@
     <TextView
         android:id="@+id/textViewQuestion"
         android:layout_width="0dp"
-        android:layout_height="170dp"
+        android:layout_height="190dp"
         android:layout_marginTop="84dp"
         android:layout_marginBottom="16dp"
         android:gravity="center"

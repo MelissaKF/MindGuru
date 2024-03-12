@@ -27,7 +27,7 @@ class WelcomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.fetchTriviaQuestions()
+        viewModel.fetchTriviaQuestionsByCategory(id)
 
         binding.registerButton.setOnClickListener {
             findNavController().navigate(R.id.action_welcomeFragment_to_registerFragment)

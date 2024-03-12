@@ -46,6 +46,10 @@ class MainViewModel : ViewModel() {
     val user: LiveData<FirebaseUser?>
         get() = _user
 
+    private val _selectedCategoryId: MutableLiveData<Int> = MutableLiveData()
+    val selectedCategoryId: LiveData<Int>
+        get() = _selectedCategoryId
+
     private val _userPoints: MutableLiveData<Int> = MutableLiveData()
     val userPoints: LiveData<Int>
         get() = _userPoints
@@ -136,6 +140,7 @@ class MainViewModel : ViewModel() {
             }
         }
     }
+
     suspend fun logout() {
         withContext(Dispatchers.IO) {
             Log.d("Logout", "Logging out...")
@@ -202,18 +207,19 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun fetchTriviaQuestions() {
+    fun fetchTriviaQuestionsByCategory(categoryId: Int) {
         viewModelScope.launch {
             try {
                 val response = triviaRepository.getTriviaQuestions(
                     amount = 50,
-                    category = 9,
+                    category = categoryId,
                     difficulty = "easy",
                     type = "multiple",
                     encode = "",
                     token = sessionToken
                 )
                 handleTriviaResponse(response)
+                Log.d("FetchQuestions", response.results.toString())
             } catch (e: Exception) {
                 Log.e("API", "Error fetching trivia questions", e)
             }
@@ -224,25 +230,33 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = triviaRepository.getTriviaCategories()
-                _categories.postValue(response.triviaCategories)
-                Log.d("Categories", categories.value.toString())
+
+                val filteredCategories = filterCategories(response.triviaCategories)
+
+                _categories.postValue(filteredCategories)
             } catch (e: Exception) {
                 Log.e("API", "Error fetching trivia categories", e)
             }
         }
     }
 
+    private fun filterCategories(categories: List<Category>): List<Category> {
+        val filteredCategories = categories.filter { !it.name.contains(":") }
+        Log.d("MainViewModel", "Filtered Categories: $filteredCategories")
+        return filteredCategories
+    }
+
     private fun handleTriviaResponse(response: TriviaResponse) {
         response.results.let { results ->
             val decodedQuestions = results.map { result ->
-                val decodedQuestion = result.question
                 val shuffledOptions = shuffleOptions(result.correctAnswer, result.incorrectAnswers)
                 val options = shuffledOptions.map { Option(it.text, it.correctAnswer) }
-                Question(decodedQuestion, options)
+
+                // Verwenden Sie die neue createQuestion-Funktion, um ein Question-Objekt zu erstellen
+                Question.createQuestion(result.question, options)
             }
             _questions.postValue(decodedQuestions)
             _currentQuestion.postValue(decodedQuestions.firstOrNull())
-
             Log.d("API", "Received questions: $decodedQuestions")
         }
     }
@@ -254,8 +268,9 @@ class MainViewModel : ViewModel() {
         val allOptions = mutableListOf(correctAnswer)
         allOptions.addAll(incorrectAnswers)
 
-        val shuffledOptions =
-            allOptions.shuffled().map { Option(decodeHtmlString(it), it == correctAnswer) }
+        val shuffledOptions = allOptions.shuffled().map {
+            Option(decodeHtmlString(it), it == correctAnswer)
+        }
 
         return shuffledOptions
     }
@@ -263,9 +278,9 @@ class MainViewModel : ViewModel() {
     private fun decodeHtmlString(htmlString: String): String {
         return Html.fromHtml(htmlString, Html.FROM_HTML_MODE_LEGACY).toString()
     }
-    // endregion
 
-    fun updateCategories(newCategories: List<Category>) {
-        _categories.postValue(newCategories)
+    fun updateSelectedCategoryId(categoryId: Int) {
+        _selectedCategoryId.value = categoryId
     }
+    // endregion
 }

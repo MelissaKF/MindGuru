@@ -49,7 +49,7 @@ class RegisterFragment : Fragment() {
                         Toast.LENGTH_LONG
                     ).show()
 
-                    findNavController().navigate(RegisterFragmentDirections.actionRegisterFragmentToPlayFieldFragment())
+                    findNavController().navigate(RegisterFragmentDirections.actionRegisterFragmentToHomeFragment())
                 }
             }
         }
