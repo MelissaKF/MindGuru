@@ -1,16 +1,10 @@
-package com.example.mindguru.remote
+package com.example.mindguru.remote.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class TriviaResponse(
-    @Json(name = "results")
-    val results: List<TriviaQuestion>
-)
-
-@JsonClass(generateAdapter = true)
-data class TriviaQuestion(
+data class TriviaQuestionResponse(
     val question: String,
     @Json(name = "correct_answer")
     val correctAnswer: String,

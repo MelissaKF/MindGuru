@@ -1,16 +1,12 @@
 package com.example.mindguru.repository
 
-import com.example.mindguru.remote.TriviaApiService.TriviaApi.triviaApiService
-import com.example.mindguru.remote.TriviaResponse
-import com.example.mindguru.remote.model.SessionTokenResetResponse
 import com.example.mindguru.remote.model.SessionTokenResponse
 import com.example.mindguru.remote.model.TriviaCategoriesResponse
+import com.example.mindguru.remote.model.TriviaCategoryCountResponse
+import com.example.mindguru.remote.model.TriviaResponse
+import com.example.mindguru.remote.triviaApiService.TriviaApiService.TriviaApi.triviaApiService
 
 class TriviaRepository() {
-
-    suspend fun requestSessionToken(): SessionTokenResponse {
-        return triviaApiService.requestSessionToken("request")
-    }
 
     suspend fun getTriviaQuestions(
         amount: Int,
@@ -23,11 +19,15 @@ class TriviaRepository() {
         return triviaApiService.getTriviaQuestions(amount, category, difficulty, type, encode, token)
     }
 
-    suspend fun resetSessionToken(command: String, token: String): SessionTokenResetResponse {
-        return triviaApiService.resetSessionToken(command, token)
+    suspend fun getSessionToken(): SessionTokenResponse {
+        return triviaApiService.getSessionToken("request")
     }
 
     suspend fun getTriviaCategories(): TriviaCategoriesResponse {
         return triviaApiService.getTriviaCategories()
+    }
+
+    suspend fun checkCategoryQuestionCount(categoryId: Int): TriviaCategoryCountResponse {
+        return triviaApiService.checkCategoryQuestionCount(categoryId)
     }
 }

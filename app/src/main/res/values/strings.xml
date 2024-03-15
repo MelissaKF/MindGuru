@@ -24,5 +24,15 @@
     <string name="option_c">Option C</string>
     <string name="option_d">Option D</string>
     <string name="userinfo_TV">UserInfo</string>
-    <string name="category_text">category</string>
+    <string name="category_sample_text">category</string>
+    <string name="choose_category_text">In which category do you want to test your knowledge?</string>
+    <string name="choose_difficulty_level_text">Great! Now choose the difficulty level!</string>
+    <string name="diff_easy">easy</string>
+    <string name="diff_medium">medium</string>
+    <string name="hard">hard</string>
+    <string name="difficulty_text">difficulty</string>
+    <string name="your_profile_text">Your profile</string>
+    <string name="password_repeat_text">Password repeat...</string>
+    <string name="logout_button_text">Logout</string>
+    <string name="exit_app_button_text">Exit App</string>
 </resources>

@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.LoginFragment"
-    tools:background="@drawable/background_gradient">
+    tools:background="@drawable/background_gradient"
+    android:id="@+id/loginFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,13 +42,13 @@
 
         <Button
             android:id="@+id/login_button"
-            android:layout_width="match_parent"
+            android:layout_width="218dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"
             android:backgroundTint="@color/light_blue"
             android:text="@string/login_btn_text"
             android:textColor="@color/white" />
-
 
         <TextView
             android:id="@+id/textViewRegister"
@@ -60,9 +61,10 @@
 
         <Button
             android:id="@+id/register_button"
-            android:layout_width="match_parent"
+            android:layout_width="218dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"
             android:backgroundTint="@color/light_blue"
             android:text="@string/create_profile_button"
             android:textColor="@color/white" />

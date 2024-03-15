@@ -11,7 +11,7 @@
         android:id="@+id/layoutUserInfo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="40dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -111,7 +111,7 @@
         style="@style/AnswerCardViewStyle"
         android:layout_width="match_parent"
         android:layout_height="84dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:alpha="0.9"
         android:padding="4dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -202,5 +202,38 @@
             app:autoSizeMinTextSize="12sp"
             app:autoSizeTextType="uniform" />
     </com.google.android.material.card.MaterialCardView>
+
+    <Button
+        android:id="@+id/logout_button"
+        android:layout_width="128dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/light_blue"
+        android:elevation="16dp"
+        android:text="@string/logout_button_text"
+        android:shadowColor="#000000"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="6"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toStartOf="@id/exit_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/exit_button" />
+
+    <Button
+        android:id="@+id/exit_button"
+        android:layout_width="128dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:backgroundTint="@color/light_blue"
+        android:elevation="16dp"
+        android:text="@string/exit_app_button_text"
+        android:shadowColor="#000000"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="6"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/logout_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

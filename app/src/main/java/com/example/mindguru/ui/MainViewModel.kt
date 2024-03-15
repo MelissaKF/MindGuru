@@ -6,15 +6,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mindguru.data.DatasourceDifficultyString
 import com.example.mindguru.model.Category
+import com.example.mindguru.model.Difficulty
 import com.example.mindguru.model.Option
 import com.example.mindguru.model.Profile
 import com.example.mindguru.model.Question
-import com.example.mindguru.remote.TriviaResponse
+import com.example.mindguru.remote.model.TriviaResponse
 import com.example.mindguru.repository.TriviaRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
@@ -41,14 +44,11 @@ class MainViewModel : ViewModel() {
         setupUserEnv()
     }
 
-    // region LiveData
+    // region LiveData Firebase Handling
+
     private val _user: MutableLiveData<FirebaseUser?> = MutableLiveData()
     val user: LiveData<FirebaseUser?>
         get() = _user
-
-    private val _selectedCategoryId: MutableLiveData<Int> = MutableLiveData()
-    val selectedCategoryId: LiveData<Int>
-        get() = _selectedCategoryId
 
     private val _userPoints: MutableLiveData<Int> = MutableLiveData()
     val userPoints: LiveData<Int>
@@ -58,6 +58,18 @@ class MainViewModel : ViewModel() {
     val loginStatus: LiveData<LoginStatus>
         get() = _loginStatus
 
+    private val _username: MutableLiveData<String?> = MutableLiveData()
+    val username: LiveData<String?>
+        get() = _username
+
+    //endregion
+
+    //region LiveData API Handling
+
+    private val _selectedCategoryId: MutableLiveData<Int> = MutableLiveData()
+    val selectedCategoryId: LiveData<Int>
+        get() = _selectedCategoryId
+
     private val _questions: MutableLiveData<List<Question?>> = MutableLiveData()
     val questions: MutableLiveData<List<Question?>>
         get() = _questions
@@ -65,6 +77,14 @@ class MainViewModel : ViewModel() {
     private val _categories: MutableLiveData<List<Category>> = MutableLiveData()
     val categories: LiveData<List<Category>>
         get() = _categories
+
+    private val _difficultyLevels: MutableLiveData<List<Difficulty>> = MutableLiveData()
+    val difficultyLevels: LiveData<List<Difficulty>>
+        get() = _difficultyLevels
+
+    private val _selectedDifficulty: MutableLiveData<String> = MutableLiveData()
+    val selectedDifficulty: LiveData<String>
+        get() = _selectedDifficulty
 
     private val _currentQuestion: MutableLiveData<Question?> = MutableLiveData()
     val currentQuestion: MutableLiveData<Question?>
@@ -74,33 +94,32 @@ class MainViewModel : ViewModel() {
     val currentQuestionPoints: MutableLiveData<Question?>
         get() = _currentQuestionPoints
 
-    private val _username: MutableLiveData<String?> = MutableLiveData()
-    val username: LiveData<String?>
-        get() = _username
     // endregion
 
-    // region Functions for Firebase handling
+    // region Functions for Firebase Handling
+
     private fun setupUserEnv() {
         auth.currentUser?.let { firebaseUser ->
             Log.d("Firebase", "Current User UID: ${firebaseUser.uid}")
             profileRef = firestore.collection("user").document(firebaseUser.uid)
             Log.d("Firebase", "profileRef initialized: $profileRef")
 
-            profileRef.get()
-                .addOnSuccessListener { document ->
-                    if (document.exists()) {
-                        val points = document.getLong("userPoints")?.toInt() ?: 0
-                        _userPoints.postValue(points)
-
-                        val username = document.getString("username")
-                        _user.postValue(firebaseUser)
-                        _username.postValue(username)
-                    }
+            profileRef.addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.e("Firebase", "Error fetching user data: $error")
+                    return@addSnapshotListener
                 }
-        }
-            ?.addOnFailureListener { exception ->
-                Log.e("Firebase", "Error getting user data", exception)
+
+                if (snapshot != null && snapshot.exists()) {
+                    val points = snapshot.getLong("userPoints")?.toInt() ?: 0
+                    _userPoints.postValue(points)
+
+                    val username = snapshot.getString("username")
+                    _user.postValue(firebaseUser)
+                    _username.postValue(username)
+                }
             }
+        }
     }
 
     fun register(username: String, email: String, password: String) {
@@ -141,17 +160,6 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    suspend fun logout() {
-        withContext(Dispatchers.IO) {
-            Log.d("Logout", "Logging out...")
-            auth.signOut()
-            _username.postValue("")
-            _userPoints.postValue(0)
-            setupUserEnv()
-            Log.d("Logout", "Logout completed")
-        }
-    }
-
     private fun addUsername(username: String) {
         val currentUser = auth.currentUser
         currentUser?.let { user ->
@@ -181,13 +189,47 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun updateUserData(username: String) {
+        val currentUser = auth.currentUser
+        currentUser?.let { user ->
+            user.updateProfile(
+                UserProfileChangeRequest.Builder()
+                    .setDisplayName(username)
+                    .build()
+            )
+                .addOnSuccessListener {
+                    profileRef.update("username", username)
+                        .addOnSuccessListener {
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("Firebase", "Failed to update username in database: $e")
+                        }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("MainViewModel", "Failed to update username: $e")
+                }
+        }
+    }
+
+    suspend fun logout() {
+        withContext(Dispatchers.IO) {
+            Log.d("Logout", "Logging out...")
+            auth.signOut()
+            _username.postValue("")
+            _userPoints.postValue(0)
+            setupUserEnv()
+            Log.d("Logout", "Logout completed")
+        }
+    }
+
     // endregion
 
-    // region Functions for API handling
+    // region Functions for API Handling
+
     private fun fetchSessionToken() {
         viewModelScope.launch {
             try {
-                val response = triviaRepository.requestSessionToken()
+                val response = triviaRepository.getSessionToken()
                 sessionToken = response.token
                 Log.d("SessionToken", "Received Session Token: $sessionToken")
             } catch (e: Exception) {
@@ -196,43 +238,39 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    private fun resetSessionToken() {
-        viewModelScope.launch {
-            try {
-                val response = triviaRepository.resetSessionToken("reset", sessionToken)
-                // Handle response if needed
-            } catch (e: Exception) {
-                Log.e("API", "Error resetting session token", e)
-            }
-        }
-    }
-
-    fun fetchTriviaQuestionsByCategory(categoryId: Int) {
+    fun fetchTriviaQuestionsByCategoryAndDifficulty(categoryId: Int, difficulty: String, callback: (Boolean) -> Unit) {
         viewModelScope.launch {
             try {
                 val response = triviaRepository.getTriviaQuestions(
-                    amount = 50,
+                    amount = 10,
                     category = categoryId,
-                    difficulty = "easy",
+                    difficulty = difficulty,
                     type = "multiple",
                     encode = "",
                     token = sessionToken
                 )
                 handleTriviaResponse(response)
-                Log.d("FetchQuestions", response.results.toString())
+                callback(true)
             } catch (e: Exception) {
                 Log.e("API", "Error fetching trivia questions", e)
+                callback(false)
             }
         }
     }
 
-    fun fetchTriviaCategories() {
+    fun fetchFilteredTriviaCategories() {
         viewModelScope.launch {
             try {
                 val response = triviaRepository.getTriviaCategories()
+                val filteredCategories = mutableListOf<Category>()
 
-                val filteredCategories = filterCategories(response.triviaCategories)
-
+                for (category in response.triviaCategories) {
+                    val categoryCountResponse =
+                        triviaRepository.checkCategoryQuestionCount(category.id)
+                    if (categoryCountResponse.triviaCategoryQuestionCount.totalQuestionCount > 200) {
+                        filteredCategories.add(category)
+                    }
+                }
                 _categories.postValue(filteredCategories)
             } catch (e: Exception) {
                 Log.e("API", "Error fetching trivia categories", e)
@@ -240,11 +278,9 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    private fun filterCategories(categories: List<Category>): List<Category> {
-        val filteredCategories = categories.filter { !it.name.contains(":") }
-        Log.d("MainViewModel", "Filtered Categories: $filteredCategories")
-        return filteredCategories
-    }
+    //endregion
+
+    //region Functions to prepare API Response for UI
 
     private fun handleTriviaResponse(response: TriviaResponse) {
         response.results.let { results ->
@@ -252,7 +288,6 @@ class MainViewModel : ViewModel() {
                 val shuffledOptions = shuffleOptions(result.correctAnswer, result.incorrectAnswers)
                 val options = shuffledOptions.map { Option(it.text, it.correctAnswer) }
 
-                // Verwenden Sie die neue createQuestion-Funktion, um ein Question-Objekt zu erstellen
                 Question.createQuestion(result.question, options)
             }
             _questions.postValue(decodedQuestions)
@@ -282,5 +317,16 @@ class MainViewModel : ViewModel() {
     fun updateSelectedCategoryId(categoryId: Int) {
         _selectedCategoryId.value = categoryId
     }
+
+    fun updateSelectedDifficulty(difficulty: String) {
+        _selectedDifficulty.value = difficulty
+    }
+
+    fun loadDifficultyLevels() {
+        val dataSource = DatasourceDifficultyString()
+        val levels = dataSource.loadData()
+        _difficultyLevels.value = levels
+    }
+
     // endregion
 }

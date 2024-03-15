@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.example.mindguru.R
 import com.example.mindguru.databinding.FragmentRegisterBinding
 
 class RegisterFragment : Fragment() {
@@ -21,8 +20,6 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentRegisterBinding.inflate(inflater, container, false)
-        val bottomNav = requireActivity().findViewById<View>(R.id.bottomNavMenu)
-        bottomNav.visibility = View.GONE
         return binding.root
     }
 
@@ -35,30 +32,34 @@ class RegisterFragment : Fragment() {
         }
 
         binding.registerButton.setOnClickListener {
-            viewModel.register(
-                binding.usernameEditText.text.toString(),
-                binding.EmailEditText.text.toString(),
-                binding.passwordEditText.text.toString(),
-            )
+            val password1 = binding.passwordEditText1.text.toString()
+            val password2 = binding.passwordEditText2.text.toString()
 
-            viewModel.user.observe(viewLifecycleOwner) {
-                if (it != null) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Account erfolgreich erstellt!\nViel Vergnügen beim Raten!",
-                        Toast.LENGTH_LONG
-                    ).show()
+            if (password1 == password2) {
+                viewModel.register(
+                    binding.usernameEditText.text.toString(),
+                    binding.emailEditText.text.toString(),
+                    password1
+                )
 
-                    findNavController().navigate(RegisterFragmentDirections.actionRegisterFragmentToHomeFragment())
+                viewModel.user.observe(viewLifecycleOwner) {
+                    if (it != null) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Account erfolgreich erstellt!\nViel Vergnügen beim Raten!",
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                        findNavController().navigate(RegisterFragmentDirections.actionRegisterFragmentToHomeFragment())
+                    }
                 }
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "The passwords entered do not match.",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        val bottomNav = requireActivity().findViewById<View>(R.id.bottomNavMenu)
-        bottomNav.visibility = View.VISIBLE
     }
 }

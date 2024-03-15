@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.example.mindguru.R
 import com.example.mindguru.databinding.FragmentLoginBinding
 
 class LoginFragment : Fragment() {
@@ -22,8 +21,7 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentLoginBinding.inflate(layoutInflater, container, false)
-        val bottomNav = requireActivity().findViewById<View>(R.id.bottomNavMenu)
-        bottomNav.visibility = View.GONE
+        viewModel.fetchFilteredTriviaCategories()
         return binding.root
     }
 
@@ -40,7 +38,6 @@ class LoginFragment : Fragment() {
         viewModel.loginStatus.observe(viewLifecycleOwner) { loginStatus ->
             when (loginStatus!!) {
                 MainViewModel.LoginStatus.SUCCESS -> {
-                    viewModel.fetchTriviaCategories()
                     Log.d("LoginStatusCategories", viewModel.categories.value.toString())
                     findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomeFragment())
                 }
@@ -56,11 +53,6 @@ class LoginFragment : Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        val bottomNav = requireActivity().findViewById<View>(R.id.bottomNavMenu)
-        bottomNav.visibility = View.VISIBLE
-    }
 
     private fun showToast(message: String) {
        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()

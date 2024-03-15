@@ -9,6 +9,12 @@
     tools:context=".MainActivity"
     android:background="@drawable/background_gradient">
 
+    <include
+        android:id="@+id/customAppBar"
+        layout="@layout/custom_app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -21,17 +27,14 @@
         app:defaultNavHost="true"
         app:navGraph= "@navigation/nav_graph" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavMenu"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        app:itemIconTint="@color/light_blue"
-        android:itemBackground="@color/light_blue"
-        android:background="@android:color/transparent"
-        app:itemTextColor="@color/white"
+    <View
+        android:id="@+id/divider"
+        android:layout_width="128dp"
+        android:layout_height="4dp"
+        android:background="@color/white"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_nav_menu" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

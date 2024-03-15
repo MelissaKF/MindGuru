@@ -7,6 +7,7 @@
     <color name="blue">#151EC0</color>
     <color name="green">#1EB926</color>
     <color name="red">#B72525</color>
+    <color name="cardBackground">#95FFFFFF</color>
 
 
 </resources>

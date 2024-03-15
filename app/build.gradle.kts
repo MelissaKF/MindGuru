@@ -43,6 +43,7 @@ android {
 
 dependencies {
 
+    implementation("androidx.cardview:cardview:1.0.0")
     val navVersion = "2.7.7"
     val room_version = "2.6.1"
 

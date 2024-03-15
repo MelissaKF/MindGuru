@@ -8,7 +8,9 @@ data class Question(
     val options: List<Option>,
 ) {
     companion object {
-        const val currentPointsEasy: Int = 25
+        const val currentPointsEasy: Int = 10
+        const val currentPointsMedium: Int = 15
+        const val currentPointsHard: Int = 25
 
         fun createQuestion(questionText: String, options: List<Option>): Question {
             val decodedQuestion = decodeHtmlString(questionText)

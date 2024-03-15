@@ -2,14 +2,14 @@ package com.example.mindguru
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
-import android.widget.Toast
+import android.widget.ImageButton
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
 import com.example.mindguru.databinding.ActivityMainBinding
 import com.example.mindguru.ui.MainViewModel
 import com.google.firebase.FirebaseApp
@@ -19,6 +19,8 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var backButton: ImageButton
+    private lateinit var settingsButton: ImageButton
     private val viewModel: MainViewModel by viewModels()
     private var appClosed = false
 
@@ -42,13 +44,30 @@ class MainActivity : AppCompatActivity() {
             .findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.navController
 
-        binding.bottomNavMenu.setupWithNavController(navController)
+        backButton = findViewById(R.id.backButton)
+        settingsButton = findViewById(R.id.settingsButton)
 
-        val user = FirebaseAuth.getInstance().currentUser
-        if (user != null) {
-            setupBottomNav()
-        } else {
-            disablePlayFieldNavigation()
+        backButton.setOnClickListener {
+            navController.navigateUp()
+        }
+
+        settingsButton.setOnClickListener {
+            val action = NavGraphDirections.actionGlobalProfileFragment()
+            navController.navigate(action)
+        }
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            backButton.visibility = if (destination.id == R.id.welcomeFragment) {
+                View.GONE
+            } else {
+                View.VISIBLE
+            }
+
+            settingsButton.visibility = if (destination.id == R.id.welcomeFragment || destination.id == R.id.loginFragment) {
+                View.GONE
+            } else {
+                View.VISIBLE
+            }
         }
     }
 
@@ -62,25 +81,5 @@ class MainActivity : AppCompatActivity() {
         }
         super.onDestroy()
         appClosed = true
-    }
-
-    private fun disablePlayFieldNavigation(): Boolean {
-        binding.bottomNavMenu.setOnItemSelectedListener { item ->
-            if (item.itemId == R.id.playFieldFragment) {
-                val user = FirebaseAuth.getInstance().currentUser
-                if (user == null) {
-                    Toast.makeText(this, "Bitte loggen Sie sich zuerst ein", Toast.LENGTH_SHORT)
-                        .show()
-                    return@setOnItemSelectedListener false
-                }
-            }
-            true
-        }
-        return false
-    }
-
-    private fun setupBottomNav() {
-        val playFieldMenuItem = binding.bottomNavMenu.menu.findItem(R.id.playFieldFragment)
-        playFieldMenuItem.isEnabled = true
     }
 }
