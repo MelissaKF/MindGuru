@@ -215,7 +215,6 @@ class PlayFieldFragment : Fragment() {
         }
     }
 
-
     private fun getCardViewForAnswer(answer: String): MaterialCardView {
         return when (answer) {
             binding.textViewAnswerA.text.toString() -> binding.cardViewAnswerA

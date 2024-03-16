@@ -74,6 +74,10 @@ class MainViewModel : ViewModel() {
     val questions: MutableLiveData<List<Question?>>
         get() = _questions
 
+    private val _currentQuestion: MutableLiveData<Question?> = MutableLiveData()
+    val currentQuestion: MutableLiveData<Question?>
+        get() = _currentQuestion
+
     private val _categories: MutableLiveData<List<Category>> = MutableLiveData()
     val categories: LiveData<List<Category>>
         get() = _categories
@@ -85,10 +89,6 @@ class MainViewModel : ViewModel() {
     private val _selectedDifficulty: MutableLiveData<String> = MutableLiveData()
     val selectedDifficulty: LiveData<String>
         get() = _selectedDifficulty
-
-    private val _currentQuestion: MutableLiveData<Question?> = MutableLiveData()
-    val currentQuestion: MutableLiveData<Question?>
-        get() = _currentQuestion
 
     private val _currentQuestionPoints: MutableLiveData<Question?> = MutableLiveData()
     val currentQuestionPoints: MutableLiveData<Question?>
